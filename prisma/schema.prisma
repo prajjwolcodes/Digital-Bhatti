@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  foodItems   FoodItem[]
+}
+
+model FoodItem {
+  id              String       @id @default(cuid())
+  name            String
+  description     String
+  price           Decimal      @db.Decimal(10, 2)
+  image           String?
+  ingredients     String[]
+  nutritionalInfo Json?
+  categoryId      String
+  category        Category     @relation(fields: [categoryId], references: [id])
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  orderItems      OrderItem[]
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
+  status    OrderStatus @default(PENDING)
+  total     Decimal     @db.Decimal(10, 2)
+  items     OrderItem[]
+  address   Json?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  foodItemId String
+  foodItem   FoodItem @relation(fields: [foodItemId], references: [id])
+  name       String
+  price      Decimal  @db.Decimal(10, 2)
+  quantity   Int
+  total      Decimal  @db.Decimal(10, 2)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
