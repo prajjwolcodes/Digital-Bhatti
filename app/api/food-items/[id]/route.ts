@@ -4,7 +4,8 @@ import prisma from "@/lib/prisma"
 import { authOptions } from "@/lib/auth"
 
 // GET a specific food item by ID
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const id = params.id
 
@@ -29,7 +30,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // PUT update a food item (admin only)
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions)
 
@@ -93,7 +95,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 // DELETE a food item (admin only)
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions)
 

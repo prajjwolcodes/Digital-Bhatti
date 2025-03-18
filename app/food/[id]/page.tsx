@@ -7,12 +7,13 @@ import AddToCartButton from "@/components/add-to-cart-button"
 import { getFoodItem } from "@/lib/data"
 
 interface FoodDetailPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
-export default async function FoodDetailPage({ params }: FoodDetailPageProps) {
+export default async function FoodDetailPage(props: FoodDetailPageProps) {
+  const params = await props.params;
   const foodItem = await getFoodItem(params.id)
 
   if (!foodItem) {
@@ -43,7 +44,7 @@ export default async function FoodDetailPage({ params }: FoodDetailPageProps) {
               {foodItem.category}
             </Badge>
             <h1 className="text-3xl font-bold">{foodItem.name}</h1>
-            <div className="text-2xl font-semibold text-primary mt-2">${foodItem.price.toFixed(2)}</div>
+            <div className="text-2xl font-semibold text-primary mt-2">Rs {foodItem.price.toFixed(2)}</div>
           </div>
 
           <div className="prose max-w-none mb-8">

@@ -301,7 +301,7 @@ export default function AdminFoodItems() {
                   <Textarea id="description" name="description" required />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="price">Price ($)</Label>
+                  <Label htmlFor="price">Price (Rs)</Label>
                   <Input id="price" name="price" type="number" step="0.01" min="0" required />
                 </div>
                 <div className="grid gap-2">
@@ -369,7 +369,7 @@ export default function AdminFoodItems() {
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>{item.category?.name}</TableCell>
                   <TableCell>
-                    ${typeof item.price === "number" ? item.price.toFixed(2) : Number(item.price).toFixed(2)}
+                    Rs {typeof item.price === "number" ? item.price.toFixed(2) : Number(item.price).toFixed(2)}
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
@@ -423,7 +423,7 @@ export default function AdminFoodItems() {
                       />
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="edit-price">Price ($)</Label>
+                      <Label htmlFor="edit-price">Price (Rs)</Label>
                       <Input
                         id="edit-price"
                         name="price"

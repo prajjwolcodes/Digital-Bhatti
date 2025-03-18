@@ -36,7 +36,7 @@ export default function AddToCartButton({ item }: AddToCartButtonProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="flex gap-4 justify-center items-center">
       <div className="flex items-center">
         <Button variant="outline" size="icon" onClick={decreaseQuantity} disabled={quantity <= 1}>
           <Minus className="h-4 w-4" />
@@ -49,7 +49,7 @@ export default function AddToCartButton({ item }: AddToCartButtonProps) {
 
       <Button size="lg" className="w-full" onClick={handleAddToCart} disabled={isAdding}>
         <ShoppingCart className="mr-2 h-5 w-5" />
-        {isAdding ? "Added to Cart!" : `Add to Cart - $${(item.price * quantity).toFixed(2)}`}
+        {isAdding ? "Added to Cart!" : `Add to Cart - Rs ${(item.price * quantity).toFixed(2)}`}
       </Button>
     </div>
   )

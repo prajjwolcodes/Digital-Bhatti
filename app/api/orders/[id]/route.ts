@@ -4,7 +4,8 @@ import prisma from "@/lib/prisma"
 import { authOptions } from "@/lib/auth"
 
 // GET a specific order by ID
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions)
 
@@ -52,7 +53,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // PUT update an order status (admin only)
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions)
 

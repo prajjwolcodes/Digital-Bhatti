@@ -94,7 +94,7 @@ export default function CartPage() {
                         <Link href={`/food/${item.id}`} className="font-medium hover:underline">
                           {item.name}
                         </Link>
-                        <div className="text-sm text-muted-foreground mt-1">${item.price.toFixed(2)} each</div>
+                        <div className="text-sm text-muted-foreground mt-1">Rs {item.price.toFixed(2)} each</div>
                       </div>
 
                       <div className="flex items-center gap-2">
@@ -118,7 +118,7 @@ export default function CartPage() {
                         </Button>
                       </div>
 
-                      <div className="text-right w-20 font-medium">${(item.price * item.quantity).toFixed(2)}</div>
+                      <div className="text-right w-20 font-medium">Rs {(item.price * item.quantity).toFixed(2)}</div>
 
                       <Button
                         variant="ghost"
@@ -145,24 +145,24 @@ export default function CartPage() {
             <CardContent className="space-y-4">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>${totalPrice.toFixed(2)}</span>
+                <span>Rs {totalPrice.toFixed(2)}</span>
               </div>
 
               <div className="flex justify-between">
                 <span>Delivery Fee</span>
-                <span>{totalPrice > 0 ? "$3.99" : "$0.00"}</span>
+                <span>{totalPrice > 0 ? "Rs 3.99" : "Rs 0.00"}</span>
               </div>
 
               <div className="flex justify-between">
                 <span>Tax</span>
-                <span>${totalPrice > 0 ? (totalPrice * 0.08).toFixed(2) : "0.00"}</span>
+                <span>Rs {totalPrice > 0 ? (totalPrice * 0.08).toFixed(2) : "0.00"}</span>
               </div>
 
               <Separator />
 
               <div className="flex justify-between font-medium text-lg">
                 <span>Total</span>
-                <span>${totalPrice > 0 ? (totalPrice + 3.99 + totalPrice * 0.08).toFixed(2) : "0.00"}</span>
+                <span>Rs {totalPrice > 0 ? (totalPrice + 3.99 + totalPrice * 0.08).toFixed(2) : "0.00"}</span>
               </div>
             </CardContent>
 
