@@ -1,14 +1,35 @@
+"use client"
+
 import Link from "next/link"
 import { Facebook, Instagram, Twitter } from "lucide-react"
+import { mockShopDetails } from "@/lib/data"
+import { useEffect, useState } from "react"
 
 export default function Footer() {
+  const [shopData, setShopData] = useState(mockShopDetails)
+
+  async function fetchShopData() {
+    try {
+      const res = await fetch('/api/settings')
+      const data = await res.json()
+      setShopData(data)
+    } catch (error) {
+      console.error("Error fetching shop data:", error)
+      setShopData(mockShopDetails)
+    }
+
+  }
+
+  useEffect(() => {
+    fetchShopData()
+  }, [])
 
   return (
     <footer className="mx-auto border-t bg-muted/40">
       <div className="container px-4 py-8 md:py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div className="space-y-4">
-            <h3 className="text-lg font-medium">Digital Bhatti</h3>
+            <h3 className="text-lg font-medium">{shopData[0].name}</h3>
             <p className="text-sm text-muted-foreground">
               Delicious food delivered to your door. Browse our menu and order your favorite dishes with just a few
               clicks.
@@ -65,22 +86,22 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-medium">Connect With Us</h3>
             <div className="flex space-x-4">
-              <Link href="#" className="text-muted-foreground hover:text-foreground">
+              <Link href={shopData[0].facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
                 <Facebook className="h-5 w-5" />
                 <span className="sr-only">Facebook</span>
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-foreground">
+              <Link href={shopData[0].twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
                 <Twitter className="h-5 w-5" />
                 <span className="sr-only">Twitter</span>
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-foreground">
+              <Link href={shopData[0].instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
                 <Instagram className="h-5 w-5" />
                 <span className="sr-only">Instagram</span>
               </Link>
             </div>
             <div className="space-y-2 text-sm">
-              <p className="text-muted-foreground">Email: contact@foodapp.com</p>
-              <p className="text-muted-foreground">Phone: (123) 456-7890</p>
+              <p className="text-muted-foreground">Email: {shopData[0].email}</p>
+              <p className="text-muted-foreground">Phone: {shopData[0].phone}</p>
             </div>
           </div>
         </div>

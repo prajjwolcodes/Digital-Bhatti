@@ -24,11 +24,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
-import type { FoodItem } from "@/lib/types"
+import type { adminFoodItem, FoodItem } from "@/lib/types"
 import { useEffect } from "react"
 
 // Mock data for demonstration
-const mockFoodItems: FoodItem[] = [
+const mockFoodItems: adminFoodItem[] = [
   {
     id: "1",
     name: "Classic Burger",
@@ -60,12 +60,12 @@ const mockCategories = ["Appetizers", "Main Courses", "Desserts", "Beverages", "
 
 export default function AdminFoodItems() {
   const { toast } = useToast()
-  const [foodItems, setFoodItems] = useState<FoodItem[]>([])
+  const [foodItems, setFoodItems] = useState<adminFoodItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [currentItem, setCurrentItem] = useState<FoodItem | null>(null)
+  const [currentItem, setCurrentItem] = useState<adminFoodItem | null>(null)
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([])
 
   useEffect(() => {
@@ -250,12 +250,12 @@ export default function AdminFoodItems() {
     }
   }
 
-  const openEditDialog = (item: FoodItem) => {
+  const openEditDialog = (item: adminFoodItem) => {
     setCurrentItem(item)
     setIsEditDialogOpen(true)
   }
 
-  const openDeleteDialog = (item: FoodItem) => {
+  const openDeleteDialog = (item: adminFoodItem) => {
     setCurrentItem(item)
     setIsDeleteDialogOpen(true)
   }
@@ -427,7 +427,7 @@ export default function AdminFoodItems() {
                       <Label htmlFor="edit-category">Category</Label>
                       <Select
                         name="category"
-                        defaultValue={currentItem.category?.id || categories[0]?.id}
+                        defaultValue={categories[0]?.id}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select a category" />

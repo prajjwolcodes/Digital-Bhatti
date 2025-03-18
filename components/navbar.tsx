@@ -19,18 +19,37 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useSession, signOut } from "next-auth/react"
+import { mockShopDetails } from "@/lib/data"
 
 export default function Navbar() {
   const { data: session } = useSession()
-
 
   const pathname = usePathname()
   const { totalItems } = useCart()
   const isMobile = useMobile()
   const [mounted, setMounted] = useState(false)
+  const [shopData, setShopData] = useState(mockShopDetails)
+
+  async function fetchShopData() {
+    try {
+      const res = await fetch('/api/settings')
+      const data = await res.json()
+      setShopData(data)
+    } catch (error) {
+      console.error("Error fetching shop data:", error)
+      setShopData(mockShopDetails)
+    }
+
+  }
+
+  useEffect(() => {
+    fetchShopData()
+  }, [])
+
 
   // Handle hydration mismatch
   useEffect(() => {
+
     setMounted(true)
   }, [])
 
@@ -76,7 +95,7 @@ export default function Navbar() {
           )}
 
           <Link href="/" className="flex items-center space-x-2">
-            <span className="font-bold text-xl">Digital Bhatti</span>
+            <span className="font-bold text-xl">{shopData[0].name}</span>
           </Link>
 
           {!isMobile && (

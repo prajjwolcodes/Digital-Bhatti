@@ -14,7 +14,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
 
-    const id = params.id
+    const id = await params.id
 
     // If user is not admin and not the requested user, deny access
     if (session.user.role !== "ADMIN" && session.user.id !== id) {
@@ -66,7 +66,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
 
-    const id = params.id
+    const { id } = await params
 
     // If user is not admin and not the user being updated, deny access
     if (session.user.role !== "ADMIN" && session.user.id !== id) {
@@ -153,7 +153,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
 
-    const id = params.id
+    const id = await params.id
 
     // Check if user exists
     const existingUser = await prisma.user.findUnique({

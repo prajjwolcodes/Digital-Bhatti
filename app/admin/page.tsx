@@ -16,8 +16,6 @@ import { useSession } from "next-auth/react"
 
 export default function AdminPage() {
   const { data: session } = useSession()
-  console.log(session);
-
 
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("food-items")

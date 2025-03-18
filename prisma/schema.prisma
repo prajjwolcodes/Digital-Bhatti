@@ -31,17 +31,17 @@ model Category {
 }
 
 model FoodItem {
-  id              String       @id @default(cuid())
+  id              String      @id @default(cuid())
   name            String
   description     String
-  price           Decimal      @db.Decimal(10, 2)
+  price           Decimal     @db.Decimal(10, 2)
   image           String?
   ingredients     String[]
   nutritionalInfo Json?
   categoryId      String
-  category        Category     @relation(fields: [categoryId], references: [id])
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+  category        Category    @relation(fields: [categoryId], references: [id])
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
   orderItems      OrderItem[]
 }
 
@@ -83,3 +83,16 @@ enum OrderStatus {
   CANCELLED
 }
 
+model Shop {
+  id        String @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  address   String
+  facebook  String
+  instagram String
+  twitter   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

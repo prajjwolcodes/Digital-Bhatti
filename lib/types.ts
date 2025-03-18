@@ -3,6 +3,23 @@ export interface FoodItem {
   name: string
   description: string
   price: number
+  category: string
+  image?: string
+  ingredients?: string[]
+  nutritionalInfo?: {
+    calories?: string
+    protein?: string
+    carbs?: string
+    fat?: string
+    [key: string]: string | undefined
+  }
+}
+
+export interface adminFoodItem {
+  id: string
+  name: string
+  description: string
+  price: number
   category: {
     id: string
     name: string
@@ -23,7 +40,7 @@ export interface User {
   id: string
   name: string
   email: string
-  role: "user" | "admin"
+  role: "USER" | "ADMIN"
   createdAt: Date
 }
 

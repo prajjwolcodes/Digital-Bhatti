@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Save } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -13,18 +13,81 @@ import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
+import { mockShopDetails } from "@/lib/data"
+import { set } from "date-fns"
 
 export default function AdminSettings() {
   const { toast } = useToast()
   const [activeTab, setActiveTab] = useState("general")
 
-  const handleSaveSettings = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const [shopData, setShopData] = useState(mockShopDetails)
+  const [isLoading, setIsLoading] = useState(false)
 
-    toast({
-      title: "Settings saved",
-      description: "Your settings have been saved successfully",
-    })
+  async function fetchShopData() {
+    setIsLoading(true)
+    try {
+      const res = await fetch('/api/settings')
+      const data = await res.json()
+      setShopData(data)
+    } catch (error) {
+      console.error("Error fetching shop data:", error)
+      setShopData(mockShopDetails)
+    } finally {
+      setIsLoading(false)
+    }
+
+  }
+
+  useEffect(() => {
+    fetchShopData()
+  }, [])
+
+
+
+  const handleSaveSettings = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsLoading(true)
+    // Save settings logic here
+    try {
+      const formData = new FormData(e.currentTarget)
+      const updatedShopDetails = {
+        name: formData.get("name") as string,
+        email: formData.get("email") as string,
+        phone: formData.get("phone") as string,
+        instagram: formData.get("instagram") as string,
+        facebook: formData.get("facebook") as string,
+        address: formData.get("address") as string,
+        twitter: formData.get("twitter") as string,
+      }
+
+      // console.log(updatedShopDetails)
+
+      const res = await fetch("api/settings", {
+        method: "PUT",
+        body: JSON.stringify(updatedShopDetails),
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })
+      // const data = await res.json()
+      // console.log(data)
+      setShopData([updatedShopDetails])
+
+      toast({
+        title: "Settings saved",
+        description: "Your settings have been saved successfully",
+      })
+    } catch (error) {
+      console.error("Error saving settings:", error)
+      toast({
+        title: "Error",
+        description: "An error occurred while saving your settings",
+      })
+      setShopData(mockShopDetails)
+
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -42,54 +105,71 @@ export default function AdminSettings() {
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="general">
-            <form onSubmit={handleSaveSettings}>
-              <div className="grid gap-6">
-                <div className="grid gap-2">
-                  <Label htmlFor="restaurant-name">Restaurant Name</Label>
-                  <Input id="restaurant-name" defaultValue="FoodApp" />
-                </div>
+          {isLoading ? (
+            <div className="flex justify-center items-center p-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
 
-                <div className="grid gap-2">
-                  <Label htmlFor="contact-email">Contact Email</Label>
-                  <Input id="contact-email" type="email" defaultValue="contact@foodapp.com" />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="contact-phone">Contact Phone</Label>
-                  <Input id="contact-phone" defaultValue="(123) 456-7890" />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Textarea id="address" defaultValue="123 Main St, Anytown, CA 12345" />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="business-hours">Business Hours</Label>
-                  <Textarea
-                    id="business-hours"
-                    defaultValue="Monday - Friday: 9:00 AM - 10:00 PM&#10;Saturday - Sunday: 10:00 AM - 11:00 PM"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="maintenance-mode">Maintenance Mode</Label>
-                    <div className="text-sm text-muted-foreground">Put the website in maintenance mode</div>
+            <TabsContent value="general">
+              <form onSubmit={handleSaveSettings}>
+                <div className="grid gap-6">
+                  <div className="grid gap-2">
+                    <Label htmlFor="restaurant-name">Restaurant Name</Label>
+                    <Input id="restaurant-name" name="name" defaultValue={shopData[0].name} />
                   </div>
-                  <Switch id="maintenance-mode" />
-                </div>
-              </div>
 
-              <div className="mt-6">
-                <Button type="submit" className="flex items-center gap-2">
-                  <Save className="h-4 w-4" />
-                  Save Changes
-                </Button>
-              </div>
-            </form>
-          </TabsContent>
+                  <div className="grid gap-2">
+                    <Label htmlFor="contact-email">Contact Email</Label>
+                    <Input id="contact-email" type="email" name="email" defaultValue={shopData[0].email} />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="contact-phone">Contact Phone</Label>
+                    <Input id="contact-phone" name="phone" defaultValue={shopData[0].phone} />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="contact-facebook">Contact Facebook</Label>
+                    <Input id="contact-facebook" name="facebook" defaultValue={shopData[0].facebook} />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="contact-instagram">Contact Instagram</Label>
+                    <Input id="contact-instagram" name="instagram" defaultValue={shopData[0].instagram} />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="contact-twitter">Contact Twitter</Label>
+                    <Input id="contact-twitter" name="twitter" defaultValue={shopData[0].twitter} />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="address">Address</Label>
+                    <Textarea id="address" name="address" defaultValue={shopData[0].address} />
+                  </div>
+
+
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="maintenance-mode">Maintenance Mode</Label>
+                      <div className="text-sm text-muted-foreground">Put the website in maintenance mode</div>
+                    </div>
+                    <Switch id="maintenance-mode" />
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <Button type="submit" className="flex items-center gap-2">
+                    <Save className="h-4 w-4" />
+
+                    {isLoading ? "Saving...." : " Save Changes"}
+                  </Button>
+                </div>
+              </form>
+            </TabsContent>
+          )}
 
           <TabsContent value="notifications">
             <form onSubmit={handleSaveSettings}>

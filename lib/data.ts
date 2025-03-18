@@ -12,8 +12,6 @@ export async function getFoodItems(): Promise<FoodItem[]> {
       },
     })
 
-    console.log(foodItems);
-
     // Transform Prisma model to match FoodItem type
     return foodItems.map((item) => ({
       id: item.id,
@@ -26,6 +24,7 @@ export async function getFoodItems(): Promise<FoodItem[]> {
       nutritionalInfo: item.nutritionalInfo as any,
     }))
   } catch (error) {
+    console.error("Error fetching food items:", error)
 
     // Fallback to mock data if database is not available
     return [
@@ -229,4 +228,14 @@ export async function getFoodItemsByCategory(category: string): Promise<FoodItem
     return mockItems.filter((item) => item.category === category)
   }
 }
+
+export const mockShopDetails = [{
+  name: "Mock Hotel",
+  address: "1234 Food Street, Food City",
+  phone: "+123 456 7890",
+  email: "hotel@gmail.com",
+  facebook: "https://www.facebook.com",
+  instagram: "https://www.instagram.com",
+  twitter: "https://www.twitter.com"
+}]
 
