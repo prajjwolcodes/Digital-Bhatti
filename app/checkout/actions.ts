@@ -66,7 +66,7 @@ export async function createOrder(formData: FormData) {
         userId: session.user.id,
         total,
         status: "PENDING",
-        address: {
+        buyer: {
           ...address,
           ...contactInfo,
         },
@@ -77,9 +77,10 @@ export async function createOrder(formData: FormData) {
     })
 
     revalidatePath("/orders")
-    return { success: true, orderId: order.id }
+    console.log(address, contactInfo, orderItems);
+    return { success: true }
   } catch (error) {
-    console.error("Error creating order:", error)
+    // console.log("Error creating order:", error)
     return { success: false, error: "Failed to create order" }
   }
 }

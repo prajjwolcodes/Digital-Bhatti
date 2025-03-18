@@ -98,7 +98,7 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
 
     return NextResponse.json(updatedOrder)
   } catch (error) {
-    console.error("Error updating order:", error)
+    // console.error("Error updating order:", error)
     return NextResponse.json({ message: "Error updating order" }, { status: 500 })
   }
 }

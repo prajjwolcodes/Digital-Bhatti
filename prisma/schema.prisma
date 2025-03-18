@@ -52,7 +52,7 @@ model Order {
   status    OrderStatus @default(PENDING)
   total     Decimal     @db.Decimal(10, 2)
   items     OrderItem[]
-  address   Json?
+  buyer     Json?
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 }

@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/hooks/use-cart"
 import { useToast } from "@/hooks/use-toast"
 import { createOrder } from "./actions"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -166,35 +167,52 @@ export default function CheckoutPage() {
                   <CardDescription>Select a payment method for your order.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <RadioGroup defaultValue="card" name="payment-method">
-                    <div className="flex items-center space-x-2 border rounded-md p-4">
-                      <RadioGroupItem value="card" id="card" />
-                      <Label htmlFor="card" className="flex items-center gap-2 cursor-pointer">
-                        <CreditCard className="h-4 w-4" />
-                        Credit/Debit Card
-                      </Label>
-                    </div>
-                    <div className="border rounded-md p-4 space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="card-number">Card Number</Label>
-                        <Input id="card-number" name="card-number" placeholder="1234 5678 9012 3456" required />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
+                  <Tabs defaultValue="account" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="account">
+                        <Label htmlFor="card" className="flex items-center gap-2 cursor-pointer">
+                          <CreditCard className="h-4 w-4" />
+                          Credit/Debit Card
+                        </Label>
+                      </TabsTrigger>
+                      <TabsTrigger value="password">
+                        Cash on Delivery
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="account">
+                      <div className="border rounded-md p-4 space-y-4">
                         <div className="space-y-2">
-                          <Label htmlFor="expiry">Expiry Date</Label>
-                          <Input id="expiry" name="expiry" placeholder="MM/YY" required />
+                          <Label htmlFor="card-number">Card Number</Label>
+                          <Input id="card-number" name="card-number" placeholder="1234 5678 9012 3456" required />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="expiry">Expiry Date</Label>
+                            <Input id="expiry" name="expiry" placeholder="MM/YY" required />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="cvc">CVC</Label>
+                            <Input id="cvc" name="cvc" placeholder="123" required />
+                          </div>
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="cvc">CVC</Label>
-                          <Input id="cvc" name="cvc" placeholder="123" required />
+                          <Label htmlFor="name-on-card">Name on Card</Label>
+                          <Input id="name-on-card" name="name-on-card" required />
                         </div>
                       </div>
+                    </TabsContent>
+                    <TabsContent value="password">
                       <div className="space-y-2">
-                        <Label htmlFor="name-on-card">Name on Card</Label>
-                        <Input id="name-on-card" name="name-on-card" required />
+                        <Label htmlFor="receiver-name">Reciever's Name</Label>
+                        <Input id="receiver-name" name="receiver-name" type="tel" required />
                       </div>
-                    </div>
-                  </RadioGroup>
+                      <div className="space-y-2">
+                        <Label htmlFor="receiver-phone">Reciever's Phone</Label>
+                        <Input id="receiver-phone" name="receiver-phone" type="tel" required />
+                      </div>
+
+                    </TabsContent>
+                  </Tabs>
                 </CardContent>
               </Card>
             </div>
@@ -277,8 +295,12 @@ export default function CheckoutPage() {
             </CardFooter>
           </Card>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }
+
+
+
+
 

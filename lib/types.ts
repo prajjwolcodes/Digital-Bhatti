@@ -49,14 +49,19 @@ export interface Order {
   userId: string
   items: OrderItem[]
   total: number
-  status: "pending" | "processing" | "completed" | "cancelled"
+  status: "PENDING" | "PROCCESING" | "COMPLETED" | "CANCELLED"
   createdAt: Date
-  address?: {
+  buyer?: {
     street: string
     city: string
     state: string
     zipCode: string
     country: string
+  }
+  user: {
+    id: string
+    name: string
+    email: string
   }
 }
 

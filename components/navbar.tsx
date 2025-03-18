@@ -159,7 +159,7 @@ export default function Navbar() {
                 <>
                   <DropdownMenuLabel className="font-bold text-gray-700">My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <Link href={session?.user && session?.user?.role === "ADMIN" ? "/admin" : "/userq"}>
+                  <Link href={session?.user && session?.user?.role === "ADMIN" ? "/admin" : `/${session?.user?.name}`}>
                     <DropdownMenuItem className="text-base text-gray-600">
                       {session?.user && session?.user?.role === "ADMIN" ? "Admin" : "User"}  | {session?.user && session?.user?.name}
                     </DropdownMenuItem>
