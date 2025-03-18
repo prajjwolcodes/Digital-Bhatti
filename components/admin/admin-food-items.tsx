@@ -62,6 +62,7 @@ export default function AdminFoodItems() {
   const { toast } = useToast()
   const [foodItems, setFoodItems] = useState<adminFoodItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingButton, setIsLoadingButton] = useState(false)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -91,6 +92,7 @@ export default function AdminFoodItems() {
   const handleAddItem = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
+    setIsLoadingButton(true)
 
     try {
       // Prepare the data
@@ -103,6 +105,7 @@ export default function AdminFoodItems() {
         ingredients: [], // Can be enhanced to accept ingredients
         nutritionalInfo: {}, // Can be enhanced to accept nutritional info
       }
+      console.log(newItem);
 
       // Send the data to the API
       const response = await fetch("/api/food-items", {
@@ -119,6 +122,7 @@ export default function AdminFoodItems() {
       }
 
       const savedItem = await response.json()
+      console.log(savedItem);
 
       // Update the UI
       setFoodItems([...foodItems, savedItem])
@@ -135,6 +139,8 @@ export default function AdminFoodItems() {
         description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive",
       })
+    } finally {
+      setIsLoadingButton(false)
     }
   }
 
@@ -169,7 +175,7 @@ export default function AdminFoodItems() {
 
   const handleEditItem = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
+    setIsLoadingButton(true)
     if (!currentItem) return
 
     const formData = new FormData(e.currentTarget)
@@ -214,11 +220,14 @@ export default function AdminFoodItems() {
         description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive",
       })
+    } finally {
+      setIsLoadingButton(false)
     }
   }
 
   const handleDeleteItem = async () => {
     if (!currentItem) return
+    setIsLoadingButton(true)
 
     try {
       const response = await fetch(`/api/food-items/${currentItem.id}`, {
@@ -247,6 +256,8 @@ export default function AdminFoodItems() {
         description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive",
       })
+    } finally {
+      setIsLoadingButton(false)
     }
   }
 
@@ -320,7 +331,7 @@ export default function AdminFoodItems() {
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Save Item</Button>
+                <Button type="submit">{isLoadingButton ? "Saving...." : " Save Item"}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -378,7 +389,7 @@ export default function AdminFoodItems() {
                           className="text-destructive focus:text-destructive"
                         >
                           <Trash className="mr-2 h-4 w-4" />
-                          Delete
+                          {isLoadingButton ? "Deleting..." : "  Delete"}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
