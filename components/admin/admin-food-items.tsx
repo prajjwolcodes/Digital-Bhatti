@@ -58,7 +58,7 @@ const mockFoodItems: adminFoodItem[] = [
 // Mock categories for demonstration
 const mockCategories = ["Appetizers", "Main Courses", "Desserts", "Beverages", "Sides"]
 
-export default function AdminFoodItems() {
+export default function AdminFoodItems({ onFoodAdd }: { onFoodAdd: () => void }) {
   const { toast } = useToast()
   const [foodItems, setFoodItems] = useState<adminFoodItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -122,9 +122,9 @@ export default function AdminFoodItems() {
       }
 
       const savedItem = await response.json()
-      console.log(savedItem);
 
       // Update the UI
+      onFoodAdd()
       setFoodItems([...foodItems, savedItem])
       setIsAddDialogOpen(false)
 
@@ -247,7 +247,7 @@ export default function AdminFoodItems() {
         title: "Food item deleted",
         description: `${currentItem.name} has been removed from the menu`,
       })
-
+      onFoodAdd()
       setCurrentItem(null)
     } catch (error) {
       console.error("Error deleting food item:", error)

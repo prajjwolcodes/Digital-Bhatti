@@ -84,14 +84,17 @@ enum OrderStatus {
 }
 
 model Shop {
-  id        String @id @default(cuid())
-  name      String
-  email     String
-  phone     String
-  address   String
-  facebook  String
-  instagram String
-  twitter   String
+  id             String   @id @default(cuid())
+  name           String?
+  email          String?
+  phone          String?
+  address        String?
+  facebook       String?
+  instagram      String?
+  twitter        String?
+  deliveryEnable Boolean? @default(false)
+  deliveryCharge Float?   @default(0)
+  taxRate        Float?   @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

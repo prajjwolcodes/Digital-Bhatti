@@ -78,11 +78,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     const { name, email, password, role } = body
 
     // Check if user exists
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        id,
-      },
-    })
+    const existingUser = await prisma.user.findUnique({ where: { id: id, } })
 
     if (!existingUser) {
       return NextResponse.json({ message: "User not found" }, { status: 404 })

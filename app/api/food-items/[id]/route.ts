@@ -127,7 +127,6 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
 
     return NextResponse.json({ message: "Food item deleted successfully" })
   } catch (error) {
-    console.error("Error deleting food item:", error)
     return NextResponse.json({ message: "Error deleting food item" }, { status: 500 })
   }
 }

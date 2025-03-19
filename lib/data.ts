@@ -230,12 +230,16 @@ export async function getFoodItemsByCategory(category: string): Promise<FoodItem
 }
 
 export const mockShopDetails = [{
+  tabType: "general",
   name: "Mock Hotel",
   address: "1234 Food Street, Food City",
   phone: "+123 456 7890",
   email: "hotel@gmail.com",
   facebook: "https://www.facebook.com",
   instagram: "https://www.instagram.com",
-  twitter: "https://www.twitter.com"
+  twitter: "https://www.twitter.com",
+  deliveryCharge: 0,
+  taxRate: 0,
+  deliveryEnabled: false,
 }]
 

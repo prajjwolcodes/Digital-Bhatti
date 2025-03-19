@@ -61,7 +61,7 @@ const mockUsers: (User & { orders: number })[] = [
   },
 ]
 
-export default function AdminUsers() {
+export default function AdminUsers({ onUserAdd }: { onUserAdd: () => void }) {
   const { toast } = useToast()
   const [users, setUsers] = useState<(User & { orders: number })[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -170,6 +170,7 @@ export default function AdminUsers() {
       }
 
       // Update the UI
+      onUserAdd()
       setUsers(users.filter((user) => user.id !== currentUser.id))
       setIsDeleteDialogOpen(false)
       setCurrentUser(null)
