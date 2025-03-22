@@ -56,12 +56,6 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
 export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
-    const session = await getServerSession(authOptions)
-
-    // Check if user is authenticated and is an admin
-    if (!session || session.user.role !== "ADMIN") {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
-    }
 
     const id = params.id
     const body = await request.json()

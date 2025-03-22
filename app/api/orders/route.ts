@@ -67,7 +67,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { items, address } = body
+    const { items, buyer } = body
 
     // Validate input
     if (!items || !items.length) {
@@ -112,7 +112,7 @@ export async function POST(request: Request) {
       data: {
         userId: session.user.id,
         total: orderTotal,
-        address,
+        buyer,
         items: {
           create: orderItems,
         },

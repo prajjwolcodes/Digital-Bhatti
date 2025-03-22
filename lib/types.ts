@@ -57,6 +57,7 @@ export interface Order {
     state: string
     zipCode: string
     country: string
+    instructions?: string
   }
   user: {
     id: string

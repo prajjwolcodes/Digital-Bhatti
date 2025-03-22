@@ -30,9 +30,10 @@ export default async function FoodDetailPage(props: FoodDetailPageProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="relative aspect-square rounded-xl overflow-hidden">
           <Image
-            src={foodItem.image || `/placeholder.svg?height=600&width=600`}
+            src={foodItem.image || `/placeholder.svg?height=400&width=400`}
             alt={foodItem.name}
-            fill
+            height={500}
+            width={600}
             className="object-cover"
             priority
           />

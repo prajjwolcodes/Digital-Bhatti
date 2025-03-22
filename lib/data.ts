@@ -231,7 +231,7 @@ export async function getFoodItemsByCategory(category: string): Promise<FoodItem
 
 export const mockShopDetails = [{
   tabType: "general",
-  name: "Mock Hotel",
+  name: "Digital Bhatti",
   address: "1234 Food Street, Food City",
   phone: "+123 456 7890",
   email: "hotel@gmail.com",
