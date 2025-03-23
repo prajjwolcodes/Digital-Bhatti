@@ -46,15 +46,17 @@ model FoodItem {
 }
 
 model Order {
-  id        String      @id @default(cuid())
-  userId    String
-  user      User        @relation(fields: [userId], references: [id])
-  status    OrderStatus @default(PENDING)
-  total     Decimal     @db.Decimal(10, 2)
-  items     OrderItem[]
-  buyer     Json?
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id            String        @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id])
+  status        OrderStatus   @default(PENDING)
+  payment       PaymentMethod @default(CASH)
+  paymentStatus PaymentStatus @default(UNPAID)
+  total         Decimal       @db.Decimal(10, 2)
+  items         OrderItem[]
+  buyer         Json?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model OrderItem {
@@ -81,6 +83,16 @@ enum OrderStatus {
   PROCESSING
   COMPLETED
   CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  ONLINE
+}
+
+enum PaymentStatus {
+  PAID
+  UNPAID
 }
 
 model Shop {

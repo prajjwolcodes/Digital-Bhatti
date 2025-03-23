@@ -50,13 +50,14 @@ export interface Order {
   items: OrderItem[]
   total: number
   status: "PENDING" | "PROCCESING" | "COMPLETED" | "CANCELLED"
+  paymentMethod: "CASH" | "ONLINE"
+  paymentStatus: "PAID" | "UNPAID"
   createdAt: Date
   buyer?: {
     street: string
     city: string
     state: string
     zipCode: string
-    country: string
     instructions?: string
   }
   user: {

@@ -41,13 +41,14 @@ const mockOrders: Order[] = [
     ],
     total: 29.97,
     status: "COMPLETED",
+    paymentMethod: "CASH",
+    paymentStatus: "UNPAID",
     createdAt: new Date(2023, 5, 15, 12, 30),
     buyer: {
       street: "123 Main St",
       city: "Anytown",
       state: "CA",
-      zipCode: "12345",
-      country: "USA",
+      zipCode: "12345"
     },
     user: {
       id: "user-1",
@@ -84,10 +85,20 @@ export default function AdminOrders() {
     }
   }
 
+  const getPaymentStatusColor = (paymentStatus: Order["paymentStatus"]) => {
+    switch (paymentStatus) {
+      case "UNPAID":
+        return "bg-gray-500 hover:bg-gray-600"
+      case "PAID":
+        return "bg-green-500 hover:bg-green-600"
+      default:
+        return "bg-gray-500 hover:bg-gray-600"
+    }
+  }
+
   const handleStatusChange = async (orderId: string, newStatus: Order["status"]) => {
     setOrders(orders.map((order) => (order.id === orderId ? { ...order, status: newStatus } : order)))
     setSelectedOrder((prev) => prev && ({ ...prev, status: newStatus }))
-
 
     try {
       const res = await fetch(`/api/orders/${orderId}`, {
@@ -117,18 +128,44 @@ export default function AdminOrders() {
 
   }
 
+  const handlePaymentStatusChange = async (orderId: string, newStatus: Order["paymentStatus"]) => {
+    setOrders(orders.map((order) => (order.id === orderId ? { ...order, paymentStatus: newStatus } : order)))
+    setSelectedOrder((prev) => prev && ({ ...prev, paymentStatus: newStatus }))
+
+    try {
+      const res = await fetch(`/api/orders/payment/${orderId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ paymentStatus: newStatus }),
+      })
+
+      const body = await res.json()
+
+      toast({
+        title: "Payment Status status updated",
+        description: `Payment Status Status changed to ${newStatus}`,
+      })
+
+    } catch (error) {
+      console.log("Error updating Payment status:", error)
+      toast({
+        title: "Error updating Payment status",
+        description: "An error occurred while updating the Payment status",
+      })
+    }
+
+  }
+
   async function generatePdf() {
     if (!contentRef.current || !selectedOrder) return
 
     setIsGeneratingPdf(true)
     try {
-      // Create a clone of the content to modify it for the PDF without affecting the displayed content
       const element = contentRef.current.cloneNode(true) as HTMLElement
-
-      // Apply styling for PDF
       const footerElement = element.querySelector('.pdf-actions-footer')
       if (footerElement) {
-        // Remove the buttons section from PDF
         footerElement.remove()
       }
 
@@ -240,9 +277,9 @@ export default function AdminOrders() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead>Email</TableHead>
               <TableHead>Total</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Payment</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -261,11 +298,17 @@ export default function AdminOrders() {
                 <TableRow key={order.id}>
                   <TableCell className="font-medium">{order.user.name}</TableCell>
                   <TableCell>{format(order.createdAt, "MMM dd, yyyy")}</TableCell>
-                  <TableCell>{order.user.email}</TableCell>
                   <TableCell>Rs {Number(order.total).toFixed(2)}</TableCell>
+
+
                   <TableCell>
                     <Badge variant="outline" className={`${getStatusColor(order.status)} text-white`}>
                       {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className={`${getPaymentStatusColor(order.paymentStatus)} text-white`}>
+                      {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -294,6 +337,20 @@ export default function AdminOrders() {
                               <SelectItem value="PROCESSING">Processing</SelectItem>
                               <SelectItem value="COMPLETED">Completed</SelectItem>
                               <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Select
+                            defaultValue={order.paymentStatus}
+                            onValueChange={(value) => handlePaymentStatusChange(order.id, value as Order["paymentStatus"])}
+                          >
+                            <SelectTrigger className="w-full border-none p-0 h-auto shadow-none">
+                              <SelectValue placeholder="Change Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="PAID">Paid</SelectItem>
+                              <SelectItem value="PENDING">Pending</SelectItem>
                             </SelectContent>
                           </Select>
                         </DropdownMenuItem>
@@ -328,9 +385,14 @@ export default function AdminOrders() {
                         {format(selectedOrder.createdAt, "MMMM dd, yyyy h:mm a")}
                       </p>
                     </div>
-                    <Badge variant="outline" className={`${getStatusColor(selectedOrder.status)} text-white px-4 py-1 mt-2 text-sm`}>
-                      {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}
-                    </Badge>
+                    <div className="flex gap-4">
+                      <Badge variant="outline" className={`${getStatusColor(selectedOrder.status)} text-white px-4 py-1 mt-2 text-sm`}>
+                        {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}
+                      </Badge>
+                      <Badge variant="outline" className={`${getPaymentStatusColor(selectedOrder.paymentStatus)} text-white px-4 py-1 mt-2 text-sm`}>
+                        {selectedOrder.paymentStatus.charAt(0).toUpperCase() + selectedOrder.paymentStatus.slice(1)}
+                      </Badge>
+                    </div>
                   </div>
 
                   {/* Order Content */}
@@ -351,7 +413,14 @@ export default function AdminOrders() {
                             <p>
                               {selectedOrder.buyer?.city}, {selectedOrder.buyer?.state} {selectedOrder.buyer?.zipCode}
                             </p>
-                            <p>{selectedOrder.buyer?.country}</p>
+                          </div>
+                        </div>
+
+                        <div>
+                          <p className="font-medium">Specific Instruction</p>
+                          <div className="text-sm">
+                            <p>{selectedOrder.buyer?.instructions}</p>
+
                           </div>
                         </div>
                       </div>
@@ -413,7 +482,7 @@ export default function AdminOrders() {
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t mt-4">
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium">Update Status:</span>
+                    <span className="text-sm font-medium"> Status:</span>
                     <Select
                       defaultValue={selectedOrder.status}
                       onValueChange={(value) => handleStatusChange(selectedOrder.id, value as Order["status"])}
@@ -426,6 +495,21 @@ export default function AdminOrders() {
                         <SelectItem value="PROCCESING">Processing</SelectItem>
                         <SelectItem value="COMPLETED">Completed</SelectItem>
                         <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <span className="text-sm font-medium"> Payment:</span>
+                    <Select
+                      defaultValue={selectedOrder.paymentStatus}
+                      onValueChange={(value) => handlePaymentStatusChange(selectedOrder.id, value as Order["paymentStatus"])}
+                    >
+                      <SelectTrigger className="w-[180px] border border-gray-400">
+                        <SelectValue placeholder="Change Payment Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="PAID">Paid</SelectItem>
+                        <SelectItem value="UNPAID">Unpaid</SelectItem>
+
                       </SelectContent>
                     </Select>
                   </div>
