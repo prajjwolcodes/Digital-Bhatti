@@ -41,7 +41,7 @@ export default function FoodCard({ item }: FoodCardProps) {
           <Link href={`/food/${item.id}`} className="hover:underline">
             <h3 className="font-semibold text-lg">{item.name}</h3>
           </Link>
-          <div className="font-medium text-primary">Rs {item.price.toFixed(2)}</div>
+          <div className="font-medium text-primary">Rs {Number(item.price).toFixed(2)}</div>
         </div>
         <p className="text-muted-foreground line-clamp-2">{item.description}</p>
       </CardContent>

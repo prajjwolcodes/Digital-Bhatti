@@ -299,14 +299,6 @@ export default function UserProfilePage() {
 
                             <Separator />
 
-                            <div>
-                                <Button asChild variant="outline" className="w-full">
-                                    <Link href="/account/settings">
-                                        <UserIcon className="h-4 w-4 mr-2" />
-                                        Edit Profile
-                                    </Link>
-                                </Button>
-                            </div>
                         </CardContent>
                     </Card>
 
@@ -775,11 +767,14 @@ function OrderCard({ order, formatDate, formatTime, getStatusBadge, setOrders }:
                                 <div className="flex items-center space-x-2">
                                     <AlertDialog>
                                         <AlertDialogTrigger asChild>
-                                            <Button className="px-6" variant="destructive">Cancel</Button>
+                                            {order.status !== "CANCELLED" && order.status !== "COMPLETED" && (
+                                                <Button className="px-12" variant="destructive">Cancel</Button>
+                                            )}
                                         </AlertDialogTrigger>
                                         <AlertDialogContent>
                                             <AlertDialogHeader>
-                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                <AlertDialogTitle>
+                                                    Are you absolutely sure?</AlertDialogTitle>
                                                 <AlertDialogDescription>
                                                     This action cannot be undone. This will cancelled your order
                                                 </AlertDialogDescription>
@@ -791,7 +786,7 @@ function OrderCard({ order, formatDate, formatTime, getStatusBadge, setOrders }:
                                         </AlertDialogContent>
                                     </AlertDialog>
 
-                                    <Select
+                                    {/* <Select
                                         defaultValue={order.status}
                                         onValueChange={(value) => handleCancelOrder(order.id, value as Order["status"])}
                                     >
@@ -804,7 +799,7 @@ function OrderCard({ order, formatDate, formatTime, getStatusBadge, setOrders }:
                                             <SelectItem value="COMPLETED">Completed</SelectItem>
                                             <SelectItem value="CANCELLED">Cancelled</SelectItem>
                                         </SelectContent>
-                                    </Select>
+                                    </Select> */}
                                 </div>
                                 <div className="flex gap-4">
                                     <Button

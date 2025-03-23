@@ -34,6 +34,7 @@ export async function GET(request: Request, { params }: { params: { username: st
             },
         })
 
+
         if (!user) {
             return NextResponse.json({ message: "User not found" }, { status: 404 })
         }

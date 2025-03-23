@@ -80,7 +80,7 @@ export default function Navbar() {
                   <Link href="/" className="flex w-full items-center py-3 text-sm font-medium">
                     Home
                   </Link>
-                  <Link href="/#menu" className="flex w-full items-center py-3 text-sm font-medium">
+                  <Link href="/menu" className="flex w-full items-center py-3 text-sm font-medium">
                     Menu
                   </Link>
                   <Link href="/about" className="flex w-full items-center py-3 text-sm font-medium">
@@ -108,8 +108,8 @@ export default function Navbar() {
                 Home
               </Link>
               <Link
-                href="/#menu"
-                className={`transition-colors hover:text-foreground/80 ${pathname === "/#menu" ? "text-foreground" : "text-foreground/60"
+                href="/menu"
+                className={`transition-colors hover:text-foreground/80 ${pathname === "/menu" ? "text-foreground" : "text-foreground/60"
                   }`}
               >
                 Menu
@@ -159,7 +159,7 @@ export default function Navbar() {
                 <>
                   <DropdownMenuLabel className="font-bold text-gray-700">My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <Link href={session?.user && session?.user?.role === "ADMIN" ? "/admin" : `/${session?.user?.name}`}>
+                  <Link href={session?.user && session?.user?.role === "ADMIN" ? "/admin" : `/user/${session?.user?.name}`}>
                     <DropdownMenuItem className="text-base text-gray-600">
                       {session?.user && session?.user?.role === "ADMIN" ? "Admin" : "User"}  | {session?.user && session?.user?.name}
                     </DropdownMenuItem>

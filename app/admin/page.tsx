@@ -25,7 +25,8 @@ export default function AdminPage() {
     userCount: 0,
     foodCount: 0,
     orderCount: 0,
-    revenue: "0"
+    revenue: "0",
+    cancelledRevenue: "0"
   })
 
 
@@ -69,7 +70,7 @@ export default function AdminPage() {
               <BarChart3 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{revenueData.revenue}</div>
+              <div className="flex gap-2 text-2xl font-bold"><p>Rs {revenueData.revenue}</p> <p className="text-red-500">{`(${revenueData.cancelledRevenue})`} </p> </div>
               {/* <p className="text-xs text-muted-foreground">+12% from last month</p> */}
             </CardContent>
           </Card>

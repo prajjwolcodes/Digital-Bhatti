@@ -3,7 +3,7 @@ export interface FoodItem {
   name: string
   description: string
   price: number
-  category: string
+  category: string | { id: string, name: string, description?: string }
   image?: string
   ingredients?: string[]
   nutritionalInfo?: {
