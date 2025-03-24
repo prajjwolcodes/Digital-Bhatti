@@ -703,7 +703,13 @@ function OrderCard({ order, formatDate, formatTime, getStatusBadge, setOrders }:
                                                     <p>
                                                         {order.buyer?.city}, {order.buyer?.state} {order.buyer?.zipCode}
                                                     </p>
-                                                    <p>{order.buyer?.country}</p>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <p className="font-medium">Specific Instruction</p>
+                                                <div className="text-sm">
+                                                    <p>{order.buyer?.instructions}</p>
                                                 </div>
                                             </div>
                                         </div>

@@ -11,12 +11,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/hooks/use-cart"
 import { useToast } from "@/hooks/use-toast"
 import { createOrder } from "./actions"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import EsewaPayment from "@/components/EsewaPayment"
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -94,7 +94,7 @@ export default function CheckoutPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <form onSubmit={handleSubmit} id="checkout-form">
-            <div className="space-y-8">
+            <div className="space-y-8 mb-10">
               <Card>
                 <CardHeader>
                   <CardTitle>Contact Information</CardTitle>
@@ -161,60 +161,7 @@ export default function CheckoutPage() {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Payment Method</CardTitle>
-                  <CardDescription>Select a payment method for your order.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Tabs defaultValue="account" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="account">
-                        <Label htmlFor="card" className="flex items-center gap-2 cursor-pointer">
-                          <CreditCard className="h-4 w-4" />
-                          Credit/Debit Card
-                        </Label>
-                      </TabsTrigger>
-                      <TabsTrigger value="password">
-                        Cash on Delivery
-                      </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="account">
-                      <div className="border rounded-md p-4 space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="card-number">Card Number</Label>
-                          <Input id="card-number" name="card-number" placeholder="1234 5678 9012 3456" required />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="expiry">Expiry Date</Label>
-                            <Input id="expiry" name="expiry" placeholder="MM/YY" required />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="cvc">CVC</Label>
-                            <Input id="cvc" name="cvc" placeholder="123" required />
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="name-on-card">Name on Card</Label>
-                          <Input id="name-on-card" name="name-on-card" required />
-                        </div>
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="password">
-                      <div className="space-y-2">
-                        <Label htmlFor="receiver-name">Reciever's Name</Label>
-                        <Input id="receiver-name" name="receiver-name" type="tel" required />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="receiver-phone">Reciever's Phone</Label>
-                        <Input id="receiver-phone" name="receiver-phone" type="tel" required />
-                      </div>
 
-                    </TabsContent>
-                  </Tabs>
-                </CardContent>
-              </Card>
             </div>
 
             <div className="mt-8 lg:hidden">
@@ -250,9 +197,44 @@ export default function CheckoutPage() {
               </Card>
             </div>
           </form>
+          <Card>
+            <CardHeader>
+              <CardTitle>Payment Method</CardTitle>
+              <CardDescription>Select a payment method for your order.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Tabs defaultValue="account" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="account">
+                    <Label htmlFor="card" className="flex items-center gap-2 cursor-pointer">
+                      <CreditCard className="h-4 w-4" />
+                      Esewa
+                    </Label>
+                  </TabsTrigger>
+                  <TabsTrigger value="password">
+                    Cash on Delivery
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="account">
+                  <EsewaPayment total_amount={total.toFixed(2)} />
+                </TabsContent>
+                <TabsContent value="password">
+                  <div className="space-y-2">
+                    <Label htmlFor="receiver-name">Reciever's Name</Label>
+                    <Input id="receiver-name" name="receiver-name" type="tel" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="receiver-phone">Reciever's Phone</Label>
+                    <Input id="receiver-phone" name="receiver-phone" type="tel" required />
+                  </div>
+
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
         </div>
 
-        <div className="hidden lg:block">
+        <div className="lg:block">
           <Card className="sticky top-24">
             <CardHeader>
               <CardTitle>Order Summary</CardTitle>

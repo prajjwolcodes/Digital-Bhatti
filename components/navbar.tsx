@@ -57,11 +57,11 @@ export default function Navbar() {
     return null
   }
 
-  const isAdminPage = pathname.startsWith("/admin")
+  // const isAdminPage = pathname.startsWith("/admin")
 
-  if (isAdminPage) {
-    return null
-  }
+  // if (isAdminPage) {
+  //   return null
+  // }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

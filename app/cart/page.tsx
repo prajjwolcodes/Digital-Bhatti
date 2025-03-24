@@ -94,7 +94,7 @@ export default function CartPage() {
                         <Link href={`/food/${item.id}`} className="font-medium hover:underline">
                           {item.name}
                         </Link>
-                        <div className="text-sm text-muted-foreground mt-1">Rs {item.price.toFixed(2)} each</div>
+                        <div className="text-sm text-muted-foreground mt-1">Rs {Number(item.price).toFixed(2)} each</div>
                       </div>
 
                       <div className="flex items-center gap-2">

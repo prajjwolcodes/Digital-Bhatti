@@ -16,9 +16,6 @@ import { useSession } from "next-auth/react"
 
 export default function AdminPage() {
   const { data: session } = useSession()
-
-
-
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("food-items")
   const [revenueData, setRevenueData] = useState({
@@ -49,7 +46,7 @@ export default function AdminPage() {
 
 
   return (
-    session && session.user?.role !== "ADMIN" ?
+    !session || session && session.user?.role !== "ADMIN" ?
       <div className="w-full h-screen flex justify-center items-center">
         <h1 className="text-xl">Access Denied! You are not allowed to visit here</h1></div>
       :
@@ -70,7 +67,7 @@ export default function AdminPage() {
               <BarChart3 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="flex gap-2 text-2xl font-bold"><p>Rs {revenueData.revenue}</p> <p className="text-red-500">{`(${revenueData.cancelledRevenue})`} </p> </div>
+              <div className="flex gap-2 text-2xl font-bold"><p>Rs {revenueData.revenue}</p> <p className="text-red-500">{`(${revenueData.cancelledRevenue ? revenueData.cancelledRevenue : "0"})`} </p> </div>
               {/* <p className="text-xs text-muted-foreground">+12% from last month</p> */}
             </CardContent>
           </Card>

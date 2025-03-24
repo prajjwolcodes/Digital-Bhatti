@@ -2,10 +2,10 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { signIn } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 
 export default function LoginPage() {
+  const { data: session } = useSession()
   const router = useRouter()
   const searchParams = useSearchParams()
   const { toast } = useToast()
@@ -22,6 +23,12 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
 
   const callbackUrl = searchParams.get("callbackUrl") || "/"
+
+  useEffect(() => {
+    if (session) {
+      router.push("/"); // Ensure navigation happens only after render
+    }
+  }, [session, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

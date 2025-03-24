@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectSeparator } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useToast } from "@/hooks/use-toast"
 import type { Order } from "@/lib/types"
@@ -157,6 +157,32 @@ export default function AdminOrders() {
     }
 
   }
+
+  interface CombinedSelection {
+    type: 'status' | 'payment';
+    status: string;
+  }
+
+  const handleCombinedSelection = (value: string) => {
+    // Split the value to determine what type of change it is
+    const [type, status]: [CombinedSelection['type'], CombinedSelection['status']] = value.split(':') as [CombinedSelection['type'], CombinedSelection['status']];
+
+    if (type === 'status') {
+      handleStatusChange(selectedOrder?.id ?? "", status as Order["status"]);
+    } else if (type === 'payment') {
+      handlePaymentStatusChange(selectedOrder?.id ?? "", status as Order["paymentStatus"]);
+    }
+  };
+
+  // Determine the display value based on current settings
+  const getCurrentDisplayValue = () => {
+    if (selectedOrder?.status) {
+      return `${selectedOrder.status}`;
+    } else if (selectedOrder?.paymentStatus) {
+      return `${selectedOrder.paymentStatus}`;
+    }
+    return "Change Status";
+  };
 
   async function generatePdf() {
     if (!contentRef.current || !selectedOrder) return
@@ -482,34 +508,33 @@ export default function AdminOrders() {
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t mt-4">
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium"> Status:</span>
+                    <span className="text-sm font-medium">Change Status:</span>
                     <Select
-                      defaultValue={selectedOrder.status}
-                      onValueChange={(value) => handleStatusChange(selectedOrder.id, value as Order["status"])}
+                      value={`${selectedOrder.status ? selectedOrder.status : ''}${selectedOrder.paymentStatus ? selectedOrder.paymentStatus : ''}`}
+                      onValueChange={handleCombinedSelection}
                     >
-                      <SelectTrigger className="w-[180px] border border-gray-400">
-                        <SelectValue placeholder="Change Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="PENDING">Pending</SelectItem>
-                        <SelectItem value="PROCCESING">Processing</SelectItem>
-                        <SelectItem value="COMPLETED">Completed</SelectItem>
-                        <SelectItem value="CANCELLED">Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
 
-                    <span className="text-sm font-medium"> Payment:</span>
-                    <Select
-                      defaultValue={selectedOrder.paymentStatus}
-                      onValueChange={(value) => handlePaymentStatusChange(selectedOrder.id, value as Order["paymentStatus"])}
-                    >
-                      <SelectTrigger className="w-[180px] border border-gray-400">
-                        <SelectValue placeholder="Change Payment Status" />
+                      <SelectTrigger className="w-[200px] border border-gray-400">
+                        <SelectValue placeholder="Change Status">{getCurrentDisplayValue()}</SelectValue>
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="PAID">Paid</SelectItem>
-                        <SelectItem value="UNPAID">Unpaid</SelectItem>
 
+                      <SelectContent>
+                        {/* Order Status Options */}
+                        <span className="text-sm text-gray-600 ml-4">Order status</span>
+
+                        <SelectItem value="status:PENDING">Pending</SelectItem>
+                        <SelectItem value="status:PROCCESING">Processing</SelectItem>
+                        <SelectItem value="status:COMPLETED">Completed</SelectItem>
+                        <SelectItem value="status:CANCELLED">Cancelled</SelectItem>
+
+                        {/* Separator */}
+                        <SelectSeparator className="my-1" />
+                        <span className="text-sm text-gray-600 ml-4">Payment status</span>
+
+
+                        {/* Payment Status Options */}
+                        <SelectItem value="payment:PAID">Paid</SelectItem>
+                        <SelectItem value="payment:UNPAID">Unpaid</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
