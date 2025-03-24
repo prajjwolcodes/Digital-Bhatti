@@ -16,7 +16,7 @@ import { useCart } from "@/hooks/use-cart"
 import { useToast } from "@/hooks/use-toast"
 import { createOrder } from "./actions"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import EsewaPayment from "@/components/EsewaPayment"
+import EsewaPayment from "@/app/payment/esewa/EsewaPayment"
 
 export default function CheckoutPage() {
   const router = useRouter()
