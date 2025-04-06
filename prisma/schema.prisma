@@ -50,7 +50,7 @@ model Order {
   userId        String
   user          User          @relation(fields: [userId], references: [id])
   status        OrderStatus   @default(PENDING)
-  payment       PaymentMethod @default(CASH)
+  paymentMethod PaymentMethod @default(CASH)
   paymentStatus PaymentStatus @default(UNPAID)
   total         Decimal       @db.Decimal(10, 2)
   items         OrderItem[]

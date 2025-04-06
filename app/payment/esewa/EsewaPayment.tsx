@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import CryptoJS from 'crypto-js';
 
-const EsewaPayment = ({ total_amount }: { total_amount: string }) => {
+const EsewaPayment = ({ total_amount, orderId }: { total_amount: number, orderId: string | string[] | undefined }) => {
     const [payment, setPayment] = React.useState({
         amount: total_amount.toString(),
         tax_amount: "0",
@@ -14,8 +14,8 @@ const EsewaPayment = ({ total_amount }: { total_amount: string }) => {
         product_code: 'EPAYTEST',
         product_service_charge: "0",
         product_delivery_charge: "0",
-        success_url: 'http://localhost:3000/payment/esewa/success',
-        failure_url: 'http://localhost:3000/payment/esewa/failure',
+        success_url: `http://localhost:3000/payment/esewa/success/${orderId}`,
+        failure_url: `http://localhost:3000/payment/esewa/failure`,
         signed_field_names: 'total_amount,transaction_uuid,product_code',
         signature: '',
         secret: "8gBm/:&EnhH.1/q"

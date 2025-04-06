@@ -54,11 +54,17 @@ export async function createOrder(formData: FormData) {
       total: item.price * item.quantity,
     }))
 
+    const paymentMethod = formData.get("paymentMethod") as any
+
+
     // Calculate order total
     const subtotal = orderItems.reduce((sum, item) => sum + item.total, 0)
     const deliveryFee = 3.99
     const tax = subtotal * 0.08
     const total = subtotal + deliveryFee + tax
+
+    console.log(address, contactInfo, orderItems, paymentMethod, total);
+
 
     // Create the order
     const order = await prisma.order.create({
@@ -73,15 +79,15 @@ export async function createOrder(formData: FormData) {
         items: {
           create: orderItems,
         },
+        paymentMethod: "CASH"
       },
     })
 
     revalidatePath("/orders")
-    console.log(address, contactInfo, orderItems);
-    return { success: true }
+    return { success: true, order }
   } catch (error) {
     // console.log("Error creating order:", error)
-    return { success: false, error: "Failed to create order" }
+    return { success: false, error: error }
   }
 }
 

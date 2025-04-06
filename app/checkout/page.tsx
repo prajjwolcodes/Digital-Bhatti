@@ -15,8 +15,7 @@ import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/hooks/use-cart"
 import { useToast } from "@/hooks/use-toast"
 import { createOrder } from "./actions"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import EsewaPayment from "@/app/payment/esewa/EsewaPayment"
+
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -34,11 +33,10 @@ export default function CheckoutPage() {
     return null
   }
 
-  // Redirect if cart is empty
-  if (items.length === 0) {
-    router.push("/cart")
-    return null
-  }
+
+
+
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -54,6 +52,7 @@ export default function CheckoutPage() {
       // Submit order
       const result = await createOrder(formData)
 
+      console.log(result)
       if (result.success) {
         clearCart()
 
@@ -62,9 +61,9 @@ export default function CheckoutPage() {
           description: "Thank you for your order. You will receive a confirmation email shortly.",
         })
 
-        router.push("/order-confirmation")
+        router.push(`/payment/${result?.order?.id}`)
       } else {
-        throw new Error(result.error || "Failed to create order")
+        throw new Error("Failed to create order")
       }
     } catch (error) {
       console.error("Checkout error:", error)
@@ -191,47 +190,13 @@ export default function CheckoutPage() {
                 <CardFooter>
                   <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
                     {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {isSubmitting ? "Processing..." : "Place Order"}
+                    {isSubmitting ? "Processing..." : "Proceed to Pay"}
                   </Button>
                 </CardFooter>
               </Card>
             </div>
           </form>
-          <Card>
-            <CardHeader>
-              <CardTitle>Payment Method</CardTitle>
-              <CardDescription>Select a payment method for your order.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Tabs defaultValue="account" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="account">
-                    <Label htmlFor="card" className="flex items-center gap-2 cursor-pointer">
-                      <CreditCard className="h-4 w-4" />
-                      Esewa
-                    </Label>
-                  </TabsTrigger>
-                  <TabsTrigger value="password">
-                    Cash on Delivery
-                  </TabsTrigger>
-                </TabsList>
-                <TabsContent value="account">
-                  <EsewaPayment total_amount={total.toFixed(2)} />
-                </TabsContent>
-                <TabsContent value="password">
-                  <div className="space-y-2">
-                    <Label htmlFor="receiver-name">Reciever's Name</Label>
-                    <Input id="receiver-name" name="receiver-name" type="tel" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="receiver-phone">Reciever's Phone</Label>
-                    <Input id="receiver-phone" name="receiver-phone" type="tel" required />
-                  </div>
 
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
         </div>
 
         <div className="lg:block">
@@ -272,7 +237,7 @@ export default function CheckoutPage() {
             <CardFooter>
               <Button type="submit" form="checkout-form" className="w-full" size="lg" disabled={isSubmitting}>
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {isSubmitting ? "Processing..." : "Place Order"}
+                {isSubmitting ? "Processing..." : "Proceed to checkout"}
               </Button>
             </CardFooter>
           </Card>
@@ -281,7 +246,6 @@ export default function CheckoutPage() {
     </div >
   )
 }
-
 
 
 

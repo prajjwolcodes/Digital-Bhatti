@@ -59,7 +59,7 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
 
     const id = params.id
     const body = await request.json()
-    const { status } = body
+    const { status, paymentMethod, paymentStatus } = body
 
     // Validate input
     if (!status) {
@@ -83,7 +83,7 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
         id,
       },
       data: {
-        status,
+        status, paymentMethod, paymentStatus
       },
       include: {
         items: true,
