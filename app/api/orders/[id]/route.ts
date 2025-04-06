@@ -61,11 +61,6 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
     const body = await request.json()
     const { status, paymentMethod, paymentStatus } = body
 
-    // Validate input
-    if (!status) {
-      return NextResponse.json({ message: "Status is required" }, { status: 400 })
-    }
-
     // Check if order exists
     const existingOrder = await prisma.order.findUnique({
       where: {

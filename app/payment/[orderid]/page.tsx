@@ -3,11 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import EsewaPayment from "@/app/payment/esewa/EsewaPayment"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { CreditCard, TruckIcon, Loader2 } from "lucide-react"
+import { CreditCard, TruckIcon, Loader2, Wallet } from "lucide-react"
 import { useParams } from 'next/navigation'
 import Navbar from '@/components/navbar'
 import { toast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import KhaltiPayment from '../khalti/page'
 
 const PaymentPage = () => {
     const orderId = useParams().orderid
@@ -24,7 +25,7 @@ const PaymentPage = () => {
                 throw new Error('Failed to fetch order details')
             }
             const data = await response.json()
-            setTotal(data.total.toNumber())
+            setTotal(data.total)
             return data
         } catch (err: any) {
             setError(err.message)
@@ -76,7 +77,7 @@ const PaymentPage = () => {
     }
 
     return (
-        <div className="max-w-lg mx-auto py-8 px-4 mb-32">
+        <div className="max-w-xl mx-auto py-8 px-4 mb-32">
             <Navbar />
             <Card className="shadow-lg border-slate-200">
                 <CardHeader className="bg-slate-50 rounded-t-lg border-b pb-6">
@@ -95,12 +96,18 @@ const PaymentPage = () => {
                 </CardHeader>
 
                 <CardContent className="space-y-6 pt-6">
-                    <Tabs defaultValue="online" className="w-full">
-                        <TabsList className="grid w-full grid-cols-2 mb-6 h-auto">
-                            <TabsTrigger value="online" className="py-3 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm">
+                    <Tabs defaultValue="esewa" className="w-full">
+                        <TabsList className="grid w-full grid-cols-3 mb-6 h-auto">
+                            <TabsTrigger value="esewa" className="py-3 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm">
                                 <div className="flex items-center gap-2">
                                     <CreditCard className="h-4 w-4" />
-                                    <span className="font-medium">Online Payment</span>
+                                    <span className="font-medium">Esewa</span>
+                                </div>
+                            </TabsTrigger>
+                            <TabsTrigger value="khalti" className="py-3 data-[state=active]:bg-purple-50 data-[state=active]:text-purple-700 data-[state=active]:shadow-sm">
+                                <div className="flex items-center gap-2">
+                                    <Wallet className="h-4 w-4" />
+                                    <span className="font-medium">Khalti</span>
                                 </div>
                             </TabsTrigger>
                             <TabsTrigger value="cash" className="py-3 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm">
@@ -111,13 +118,23 @@ const PaymentPage = () => {
                             </TabsTrigger>
                         </TabsList>
 
-                        <TabsContent value="online" className="mt-2">
+                        <TabsContent value="esewa" className="mt-2">
                             <div className="bg-slate-50 p-4 rounded-md mb-4">
                                 <h3 className="font-medium text-slate-800 mb-2">Secure Online Payment</h3>
                                 <p className="text-slate-600 text-sm">Pay now using our secure payment gateway</p>
                             </div>
                             <div className="py-2">
                                 <EsewaPayment total_amount={Number(Number(total).toFixed(2))} orderId={orderId} />
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="khalti" className="mt-2">
+                            <div className="bg-purple-50 p-4 rounded-md mb-4">
+                                <h3 className="font-medium text-purple-800 mb-2">Khalti Digital Wallet</h3>
+                                <p className="text-purple-700 text-sm">Fast, secure and convenient payments</p>
+                            </div>
+                            <div className="py-2">
+                                <KhaltiPayment total_amount={Number(Number(total).toFixed(2))} orderId={orderId} />
                             </div>
                         </TabsContent>
 

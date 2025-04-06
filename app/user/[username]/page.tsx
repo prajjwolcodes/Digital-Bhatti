@@ -152,6 +152,8 @@ export default function UserProfilePage() {
         }
     }
 
+
+
     if (isLoading) {
         return (
             <div className="container mx-auto py-4">
@@ -597,6 +599,17 @@ function OrderCard({ order, formatDate, formatTime, getStatusBadge, setOrders }:
         }
     }
 
+    const getPaymentStatusColor = (paymentStatus: Order["paymentStatus"]) => {
+        switch (paymentStatus) {
+            case "UNPAID":
+                return "bg-gray-500 hover:bg-gray-600"
+            case "PAID":
+                return "bg-green-500 hover:bg-green-600"
+            default:
+                return "bg-gray-500 hover:bg-gray-600"
+        }
+    }
+
     return (
         <Card className={`overflow-hidden shadow-sm hover:shadow-md transition-shadow border-l-4 ${getOrderBorderColor(order.status)}`}>
             <CardHeader className="bg-muted/40 pb-3">
@@ -680,9 +693,14 @@ function OrderCard({ order, formatDate, formatTime, getStatusBadge, setOrders }:
                                             {format(order.createdAt, "MMMM dd, yyyy h:mm a")}
                                         </p>
                                     </div>
-                                    <Badge variant="outline" className={`${getStatusColor(order.status)} text-white px-4 py-1 mt-2 text-sm`}>
-                                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                                    </Badge>
+                                    <div className="flex gap-4">
+                                        <Badge variant="outline" className={`${getStatusColor(order.status)} text-white px-4 py-1 mt-2 text-sm`}>
+                                            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                        </Badge>
+                                        <Badge variant="outline" className={`${getPaymentStatusColor(order.paymentStatus)} text-white px-6 py-1 mt-2 text-sm`}>
+                                            {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
+                                        </Badge>
+                                    </div>
                                 </div>
 
                                 {/* Order Content */}

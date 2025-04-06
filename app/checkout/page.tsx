@@ -58,7 +58,7 @@ export default function CheckoutPage() {
 
         toast({
           title: "Order placed successfully!",
-          description: "Thank you for your order. You will receive a confirmation email shortly.",
+          description: "You will now be redirected to the payment page.",
         })
 
         router.push(`/payment/${result?.order?.id}`)

@@ -1,24 +1,38 @@
-import { NextRequest, NextResponse } from 'next/server';
+// pages/api/initiate-khalti-payment.js
+import { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
+    const { amount, purchase_order_id, purchase_order_name, orderId } = await req.json()
+    console.log(amount, process.env.KHALTI_SECRET_KEY);
+    const amountInNumber = Number(amount) * 100;
+
+    const payload = {
+        return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/khalti/success/${orderId}`,
+        website_url: process.env.NEXT_PUBLIC_BASE_URL,
+        amount: amountInNumber, purchase_order_id, purchase_order_name,
+    };
+
     try {
-        const { token, amount } = await req.json();
-        const secretKey = process.env.KHALTI_SECRET_KEY;
-
-        if (!secretKey) {
-            return NextResponse.json({ error: 'Missing secret key' }, { status: 500 });
-        }
-
-        const response = await fetch(
-            'https://khalti.com/api/v2/payment/verify/',
-            { method: "POST", body: JSON.stringify({ token, amount }), headers: { Authorization: `Key ${secretKey}` } }
+        const khaltiResponse = await fetch(
+            'https://a.khalti.com/api/v2/epayment/initiate/',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Key ${process.env.KHALTI_SECRET_KEY}`,
+                },
+                body: JSON.stringify({
+                    ...payload
+                }),
+            }
         );
 
-        if (!response.ok) throw new Error('Failed to verify payment')
+        const data = await khaltiResponse.json();
+        console.log(data);
 
-
-        return NextResponse.json(response, { status: 200 });
+        return Response.json(data);
     } catch (error: any) {
-        return NextResponse.json({ error: error.response?.data || error.message }, { status: 400 });
+        return Response.json({ error: error.message });
     }
+
 }

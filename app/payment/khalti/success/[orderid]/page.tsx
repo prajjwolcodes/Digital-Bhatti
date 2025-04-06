@@ -1,7 +1,7 @@
 'use client'
 
 // pages/payment-success.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
 import { useParams, useSearchParams } from 'next/navigation';
@@ -10,48 +10,65 @@ import { useRouter } from 'next/navigation';
 export default function PaymentSuccess() {
     const orderId = useParams().orderid
     const searchParams = useSearchParams()
-    const hashedData = searchParams.get('data')
+    const pidx = searchParams.get('pidx')
+    const [paymentStatus, setPaymentStatus] = useState<'PENDING' | 'SUCCESS' | 'FAIL'>('PENDING')
 
-    console.log(hashedData, orderId)
+    useEffect(() => {
+        const verifyPayment = async () => {
+            if (!pidx) return
 
-    const data = hashedData ? JSON.parse(atob(hashedData)) : null;
-    console.log(data)
+            try {
+                const res = await fetch('https://a.khalti.com/api/v2/epayment/lookup/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Key ${process.env.NEXT_PUBLIC_KHALTI_SECRET_KEY}`,
+                    },
+                    body: JSON.stringify({ pidx }),
+                })
+
+                if (!res.ok) {
+                    throw new Error('Failed to verify payment')
+                }
+
+                const data = await res.json()
+                console.log(data)
+
+                if (res.ok) {
+                    setPaymentStatus('SUCCESS')
+                    try {
+                        const response = await fetch(`/api/orders/${orderId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                paymentMethod: "ONLINE",
+                                paymentStatus: "PAID",
+                            }),
+                        });
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch order details');
+                        }
+                        const orderDetails = await response.json();
+                        console.log(orderDetails);
+                    } catch (error) {
+                        console.error('Error fetching order details:', error);
+                    }
+                } else {
+                    setPaymentStatus('FAIL')
+                }
+            } catch (err) {
+                setPaymentStatus('FAIL')
+            }
+        }
+
+        verifyPayment()
+    }, [pidx])
 
     const router = useRouter()
 
     // if (!data || data.status !== 'COMPLETE') return router.replace('/payment/esewa/failure')
-
-    const updateStatus = async () => {
-        if (data.status === 'COMPLETE') {
-            try {
-                const response = await fetch(`/api/orders/${orderId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        paymentMethod: "ONLINE",
-                        paymentStatus: "PAID",
-                    }),
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to fetch order details');
-                }
-                const orderDetails = await response.json();
-                console.log(orderDetails);
-            } catch (error) {
-                console.error('Error fetching order details:', error);
-            }
-        }
-    };
-
-    useEffect(() => {
-        updateStatus()
-    }
-        , [data]);
-
-
-
     return (
         <div className="min-h-screen bg-green-50 flex items-center justify-center p-4">
             <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
